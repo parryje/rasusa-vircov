@@ -1,0 +1,6 @@
+channels:
+  - conda-forge
+  - bioconda
+  - esteinig
+dependencies:
+  - vircov

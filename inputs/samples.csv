@@ -1,0 +1,5 @@
+#use scripts/prepare.py to generate this file,,,
+#sample,r1,r2,limit
+RNA_NFW_8e103_500k,inputs/RNA_NFW_8e103_1_S28_R1_001.fastq.gz,inputs/RNA_NFW_8e103_1_S28_R2_001.fastq.gz,500000
+RNA_NFW_8e103_1M,inputs/RNA_NFW_8e103_1_S28_R1_001.fastq.gz,inputs/RNA_NFW_8e103_1_S28_R2_001.fastq.gz,1000000
+RNA_NFW_8e103_2M,inputs/RNA_NFW_8e103_1_S28_R1_001.fastq.gz,inputs/RNA_NFW_8e103_1_S28_R2_001.fastq.gz,2000000
