@@ -283,3 +283,15 @@ RNA_PS_8e103_1M,inputs/RNA_PS_8e103_R1.fastq.gz,inputs/RNA_PS_8e103_R2.fastq.gz,
 RNA_PS_8e103_1.5M,inputs/RNA_PS_8e103_R1.fastq.gz,inputs/RNA_PS_8e103_R2.fastq.gz,1.5M
 RNA_PS_8e103_2M,inputs/RNA_PS_8e103_R1.fastq.gz,inputs/RNA_PS_8e103_R2.fastq.gz,2M
 RNA_PS_8e103_3M,inputs/RNA_PS_8e103_R1.fastq.gz,inputs/RNA_PS_8e103_R2.fastq.gz,3M
+Unspiked_Comp_BeverageCup_50k,inputs/Unspiked_Comp_BeverageCup_R1.fastq.gz,inputs/Unspiked_Comp_BeverageCup_R2.fastq.gz,50k
+Unspiked_Comp_BeverageCup_100k,inputs/Unspiked_Comp_BeverageCup_R1.fastq.gz,inputs/Unspiked_Comp_BeverageCup_R2.fastq.gz,100k
+Unspiked_Comp_BeverageCup_200k,inputs/Unspiked_Comp_BeverageCup_R1.fastq.gz,inputs/Unspiked_Comp_BeverageCup_R2.fastq.gz,200k
+Unspiked_Comp_BeverageCup_300k,inputs/Unspiked_Comp_BeverageCup_R1.fastq.gz,inputs/Unspiked_Comp_BeverageCup_R2.fastq.gz,300k
+Unspiked_Comp_BeverageCup_500k,inputs/Unspiked_Comp_BeverageCup_R1.fastq.gz,inputs/Unspiked_Comp_BeverageCup_R2.fastq.gz,500k
+Unspiked_Comp_BeverageCup_800k,inputs/Unspiked_Comp_BeverageCup_R1.fastq.gz,inputs/Unspiked_Comp_BeverageCup_R2.fastq.gz,800k
+Unspiked_Comp_BeverageCup_1M,inputs/Unspiked_Comp_BeverageCup_R1.fastq.gz,inputs/Unspiked_Comp_BeverageCup_R2.fastq.gz,1M
+Unspiked_Grab_BeverageCup_50k,inputs/Unspiked_Grab_BeverageCup_R1.fastq.gz,inputs/Unspiked_Grab_BeverageCup_R2.fastq.gz,50k
+Unspiked_Grab_BeverageCup_100k,inputs/Unspiked_Grab_BeverageCup_R1.fastq.gz,inputs/Unspiked_Grab_BeverageCup_R2.fastq.gz,100k
+Unspiked_Grab_BeverageCup_200k,inputs/Unspiked_Grab_BeverageCup_R1.fastq.gz,inputs/Unspiked_Grab_BeverageCup_R2.fastq.gz,200k
+Unspiked_Grab_BeverageCup_300k,inputs/Unspiked_Grab_BeverageCup_R1.fastq.gz,inputs/Unspiked_Grab_BeverageCup_R2.fastq.gz,300k
+Unspiked_Grab_BeverageCup_500k,inputs/Unspiked_Grab_BeverageCup_R1.fastq.gz,inputs/Unspiked_Grab_BeverageCup_R2.fastq.gz,500k
