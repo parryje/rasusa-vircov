@@ -28,17 +28,51 @@ dat3 = dat2 %>%
     separate(col = sample_name, into = c("molecule", "matrix", "dilution", "subsample_limit_short"), sep = "_", remove = F, extra = "merge") %>%
     mutate(replicate = gsub("replicate", "", replicate))
 
-flu = dat3 %>% filter(name == "FLUAV") %>%
-    group_by(sample_name, molecule, matrix, dilution, subsample_limit_short, name, replicate) %>%
-    reframe(consensus_completeness = mean(consensus_completeness)) %>%
-    ungroup()
+# something is wrong here - fix later????
+# this should be exactly the same code as below where we compute std bars and mean.
+flu_stats = dat3 %>% 
+    filter(name == "FLUAV") %>%
+    filter(segment %in% c("RNA4", "RNA6", "RNA7")) %>%
+    group_by(molecule, matrix, dilution, subsample_limit_short, name) %>%
+    mutate(
+        std_cc = sd(consensus_completeness),
+        mean_cc = mean(consensus_completeness),
+        lower_cc = mean_cc - std_cc,
+        upper_cc = mean_cc + std_cc,
+        std_rc = sd(remap_coverage),
+        mean_rc = mean(remap_coverage),
+        lower_rc = mean_rc - std_rc,
+        upper_rc = mean_rc + std_rc,
+    ) %>%
+    ungroup %>%
+    # refactor levels for plotting purposes
+    mutate(subsample_limit_short = fct_relevel(subsample_limit_short, c("50k","100k","200k","300k","500k","800k","1M","1.5M","2M","3M"))) %>%
+    # now that we calculate stats, we can drop replicates
+    distinct(molecule, matrix, dilution, subsample_limit_short, name, .keep_all = T)
 
-# combine back flu into main df
-dat_final = dat3 %>% filter(name != "FLUAV") %>%
-    bind_rows(flu)
+# flu internal segment analysis
+flu_segments_stats = dat3 %>% 
+    filter(name == "FLUAV") %>%
+    group_by(molecule, matrix, dilution, subsample_limit_short, name, segment) %>%
+    mutate(
+        std_cc = sd(consensus_completeness),
+        mean_cc = mean(consensus_completeness),
+        lower_cc = mean_cc - std_cc,
+        upper_cc = mean_cc + std_cc,
+        std_rc = sd(remap_coverage),
+        mean_rc = mean(remap_coverage),
+        lower_rc = mean_rc - std_rc,
+        upper_rc = mean_rc + std_rc,
+    ) %>%
+    ungroup %>%
+    # refactor levels for plotting purposes
+    mutate(subsample_limit_short = fct_relevel(subsample_limit_short, c("50k","100k","200k","300k","500k","800k","1M","1.5M","2M","3M"))) %>%
+    # now that we calculate stats, we can drop replicates
+    distinct(molecule, matrix, dilution, subsample_limit_short, name, segment, .keep_all = T)
 
 #compute std bars for error bars from replicates
-stats = dat_final %>%
+allother_stats = dat3 %>%
+    filter(name != "FLUAV") %>%
     group_by(molecule, matrix, dilution, subsample_limit_short, name) %>%
     mutate(
         std_cc = sd(consensus_completeness),
@@ -56,15 +90,18 @@ stats = dat_final %>%
     # now that we calculate stats, we can drop replicates
     distinct(molecule, matrix, dilution, subsample_limit_short, name, .keep_all = T)
 
+# combine datasets
+stats = bind_rows(allother_stats, flu_stats)
+
 #plot
 plot_cc = stats %>%
     ggplot(aes(x = subsample_limit_short, y = mean_cc)) +
     geom_line(aes(group = dilution, color = dilution)) +
-    geom_point(aes(group = dilution, color = dilution)) + 
+    geom_point(aes(group = dilution, color = dilution)) +
     geom_errorbar(aes(ymin = lower_cc, ymax = upper_cc), width = 0.1) +
-    facet_grid(name ~ matrix) + 
-    ylab("Consensus Completeness (%)") + 
-    xlab("Read Subsampling") + 
+    facet_grid(name ~ matrix) +
+    ylab("Consensus Completeness (%)") +
+    xlab("Read Subsampling") +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ggsave(filename = "subsamp_cc.png", plot = plot_cc, device = "png", width = 297, height = 210, units = "mm")
@@ -72,12 +109,25 @@ ggsave(filename = "subsamp_cc.png", plot = plot_cc, device = "png", width = 297,
 plot_rc = stats %>%
     ggplot(aes(x = subsample_limit_short, y = mean_rc)) +
     geom_line(aes(group = dilution, color = dilution)) +
-    geom_point(aes(group = dilution, color = dilution)) + 
+    geom_point(aes(group = dilution, color = dilution)) +
     geom_errorbar(aes(ymin = lower_rc, ymax = upper_rc), width = 0.1) +
     geom_hline(yintercept=80, linetype='dotted', col = 'red') +
-    facet_grid(name ~ matrix) + 
-    ylab("Consensus Completeness (%)") + 
-    xlab("Read Subsampling") + 
+    facet_grid(name ~ matrix) +
+    ylab("Consensus Completeness (%)") +
+    xlab("Read Subsampling") +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ggsave(filename = "subsamp_rc.png", plot = plot_rc, device = "png", width = 297, height = 210, units = "mm")
+
+plot_flu_segments = flu_segments_stats %>%
+    ggplot(aes(x = subsample_limit_short, y = mean_cc)) +
+    geom_line(aes(group = dilution, color = dilution)) +
+    geom_point(aes(group = dilution, color = dilution)) +
+    geom_errorbar(aes(ymin = lower_cc, ymax = upper_cc), width = 0.1) +
+    facet_grid(segment ~ matrix) +
+    ylab("Consensus Completeness (%)") +
+    xlab("Read Subsampling") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggsave(filename = "subsamp_flu.png", plot = plot_flu_segments, device = "png", width = 297, height = 210, units = "mm")
+
