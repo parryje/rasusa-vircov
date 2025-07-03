@@ -1,11 +1,24 @@
-Current 4/07/2025 version:
-    - Subsampling is working
-    - vircov is working
-    - vircov collate is working
-    - plotting is working (`scripts/plot.R`) but:
-        - tested on limited input samples and replicates.
-        - Needs sprucing up (ugly atm)
+# wastewater subsampling pipeline
 
-Work to do:
-    - Calculate the best subsampling read levels for input library. Some libraries have less reads, which affects their  upper limit. eg one sample might have 5M, while another might have 2M. Subsampling down to 5M on a 2m sample produces 2M reads.
-    - Easiest way to do this is to use seqkit stats on the inputs. Find the lower limit,
+### How to run
+
+Git clone this repo and run snakemake:
+
+```
+snakemake -j 10 --use-conda
+```
+
+### outputs:
+
+1. Subsampled reads to specified amount in `results/subsampled
+2. vircov output in `results/vircov`
+3. concatenated vircov results in`results/vircov/all.combined.tsv`
+4. plots in `scripts`, R script must be run manually.
+
+### Plots
+
+1. `rc` references to `remap consensus` value in the vircov output
+2. `cc` references to `consensus consensus` value in the vircov output
+3. For `rc` and `cc` plots, the flu segments 4,5,6 (HA,NA,MP) were used instead of the full genome. Values were averaged.
+4. The `*_flu` plot contains segments variability.
+
