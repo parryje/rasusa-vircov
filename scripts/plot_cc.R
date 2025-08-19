@@ -1,4 +1,4 @@
-pacman::p_load(tidyr, dplyr, stringr, ggplot2, forcats)
+pacman::p_load(tidyr, dplyr, stringr, ggplot2, forcats, ggtext)
 
 # do_something <- function(data_path, out_path, threads, myparam) {
 #     # R code
