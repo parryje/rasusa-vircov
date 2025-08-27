@@ -119,29 +119,39 @@ stats = bind_rows(allother_stats, flu_stats) %>%
 
 #set up mytheme for ggplot
 my_colors_new = c('#e31a1c' = "1e106",
-              '#1f78b4' = "2e105",
-              '#33a02c' = "4e104",
-              '#ff7f00' = "8e103")
+                  '#1f78b4' = "2e105",
+                  '#33a02c' = "4e104",
+                  '#ff7f00' = "8e103")
+
 
 mytheme = list(
+  theme_bw(),
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
     legend.text = element_markdown()
-    ),
+  ),
   scale_color_manual(
-      values = names(my_colors_new), 
-      breaks = my_colors_new,
-      labels = c("1e106" = "1x10<sup>6</sup>", "2e105" = "2x10<sup>5</sup>", "4e104" = "4x10<sup>4</sup>", "8e103" = "8x10<sup>3</sup>" )
-    ),
+    values = names(my_colors_new), 
+    breaks = my_colors_new,
+    labels = c("1e106" = "1x10<sup>6</sup>", 
+               "2e105" = "2x10<sup>5</sup>", 
+               "4e104" = "4x10<sup>4</sup>", 
+               "8e103" = "8x10<sup>3</sup>")
+  ),
   scale_shape_manual(
-      guide = guide_legend(override.aes = list(size = 5, alpha = 1, linetype = 0)),
-      values = c(15,16,17,18),
-      labels = c("1e106" = "1x10<sup>6</sup>", "2e105" = "2x10<sup>5</sup>", "4e104" = "4x10<sup>4</sup>", "8e103" = "8x10<sup>3</sup>")
-    )
+    guide = guide_legend(override.aes = list(size = 5, alpha = 1, linetype = 0)),
+    values = c(15,16,17,18),
+    labels = c("1e106" = "1x10<sup>6</sup>", 
+               "2e105" = "2x10<sup>5</sup>", 
+               "4e104" = "4x10<sup>4</sup>", 
+               "8e103" = "8x10<sup>3</sup>")    
+  )
 )
 
 #ggplot 
-plot_cc = stats %>%
+
+plot_cc_all = stats %>%
+  filter(name != "MPXV") %>%
   ggplot(aes(
     x = subsample_limit_short,
     y = mean_cc,
@@ -156,12 +166,34 @@ plot_cc = stats %>%
   geom_errorbar(aes(ymin = lower_cc, ymax = upper_cc), width = 0.1) +
   facet_grid(name_segments ~ matrix) +
   ylab("Consensus Completeness (%)") +
+  xlab("") +
+  mytheme
+
+plot_cc_mpxv = stats %>%
+  filter(name == "MPXV") %>%
+  ggplot(aes(
+    x = subsample_limit_short,
+    y = mean_cc,
+    group = dilution,
+    color = dilution
+  )) +
+  geom_line(alpha=0.5) +
+  geom_point(
+    aes(shape = dilution), 
+    size = 2, 
+    alpha = 0.5) +
+  geom_errorbar(aes(ymin = lower_cc, ymax = upper_cc), width = 0.1) +
+  facet_grid(name_segments ~ matrix) +
+  ylab("") +
   xlab("Read Subsampling") +
   mytheme
+
+plot_cc = plot_cc_all / plot_cc_mpxv +
+  plot_layout(heights = c(10,1))
 plot_cc
 
 ggsave(filename = "subsamp_cc.png", plot = plot_cc, device = "png", width = 297, height = 210, units = "mm")
-
+ggsave(filename = "subsamp_cc.svg", plot = plot_cc, device = "svg", width = 297, height = 210, units = "mm")
 
 plot_rc = stats %>%
   ggplot(aes(
@@ -182,7 +214,8 @@ plot_rc = stats %>%
   mytheme
 plot_rc
 
-ggsave(filename = "subsamp_rc.png", plot = plot_cc, device = "png", width = 297, height = 210, units = "mm")
+ggsave(filename = "subsamp_rc.png", plot = plot_rc, device = "png", width = 297, height = 210, units = "mm")
+ggsave(filename = "subsamp_rc.svg", plot = plot_rc, device = "svg", width = 297, height = 210, units = "mm")
 
 plot_flu_segments = flu_segments_stats %>%
   ggplot(aes(
@@ -202,3 +235,6 @@ plot_flu_segments = flu_segments_stats %>%
   xlab("Read Subsampling") +
   mytheme
 plot_flu_segments
+
+ggsave(filename = "subsamp_cc_flu_segments_stats.png", plot = plot_flu_segments, device = "png", width = 297, height = 210, units = "mm")
+ggsave(filename = "subsamp_cc_flusegments_stats.svg", plot = plot_flu_segments, device = "svg", width = 297, height = 210, units = "mm")
